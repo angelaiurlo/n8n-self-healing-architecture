@@ -1,0 +1,263 @@
+{
+  "name": "Child Worker Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 🔧 CHILD WORKER WORKFLOW\n\n**Role:** Contains all the business logic.\n\n**Principle:** Fail-Fast — if something goes wrong, the node fails immediately and returns the error to the Controller (Parent) without handling exceptions locally.\n\n**Flow:**\n1. Receives the payload from the Parent\n2. Formats the data\n3. Calls the external API (CRM, ERP, etc.)\n4. Returns the result to the Parent\n\n\n⚠️ Do **NOT** add any error handling logic here.",
+        "height": 408,
+        "width": 380,
+        "color": 5
+      },
+      "id": "5b1280ec-5099-4c45-b17a-8aaa7828966a",
+      "name": "📋 CHILD WORKER — Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Trigger\n\nReceives the payload sent by the **Execute Sub-workflow** node in the Parent.\n\nData arrives as a standard JSON item and is immediately available via `$json`.",
+        "height": 288,
+        "width": 300,
+        "color": 7
+      },
+      "id": "21c2748c-d930-46d2-a354-b222783e0eb6",
+      "name": "📌 Step 1 — Trigger",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Format Data\n\nPerforms transformation and normalization of the payload before sending it to the external API.\n\nAdds useful metadata such as timestamp and worker ID for traceability.",
+        "height": 288,
+        "width": 300,
+        "color": 7
+      },
+      "id": "81b9f60b-b519-4605-b38e-6b0bb9f8bb6c",
+      "name": "📌 Step 2 — Format Data",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        768,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## HTTP Request\n\nSimulates a call to an external CRM, ERP, or Payment Gateway.\n\n🔴 **This node can fail** (timeout, rate limit, 500 error). In that case the entire workflow terminates with an error, which is caught by the Controller.\n\n➡️ Replace the URL with your real endpoint.",
+        "height": 292,
+        "width": 300,
+        "color": 3
+      },
+      "id": "7b461247-a93e-4fb6-a504-d62f6c216a4e",
+      "name": "📌 Step 3 — HTTP Request",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Response to Parent\n\nReturns the processed result to the Controller.\n\nThe Parent uses this response in the **success branch** to continue the normal flow.",
+        "height": 294,
+        "width": 300,
+        "color": 7
+      },
+      "id": "fe80e2c8-6a45-41b0-a637-e6da1c4594d7",
+      "name": "📌 Step 4 — Respond",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        -48
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "71df92b5-e968-44d7-8dc1-87aad96b4312",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        528,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.example-crm.com/v1/leads",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"customer_id\": \"{{ $json.customer_id }}\",\n  \"email\": \"{{ $json.email }}\",\n  \"amount\": {{ $json.order_amount }},\n  \"processed_at\": \"{{ $json.processed_at }}\"\n}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "67988679-f4ef-4fe5-87f4-eac2bed75ef4",
+      "name": "POST to External CRM API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "success",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "r2",
+              "name": "crm_response",
+              "value": "={{ $json }}",
+              "type": "object"
+            },
+            {
+              "id": "r3",
+              "name": "completed_at",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "272d66e1-0b86-4e84-b45a-b2abeb2ff7a3",
+      "name": "Return Result to Controller",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1536,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "customer_id",
+              "value": "={{ $json.customer_id }}",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "order_amount",
+              "value": "={{ $json.order_amount }}",
+              "type": "number"
+            },
+            {
+              "id": "f3",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "f4",
+              "name": "processed_at",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "f5",
+              "name": "worker_id",
+              "value": "={{ $workflow.id }}",
+              "type": "string"
+            },
+            {
+              "id": "f6",
+              "name": "status",
+              "value": "processing",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "caf12fe2-9cc3-4a64-b8f8-b54b09c56ef7",
+      "name": "Format and Enrich Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        864,
+        272
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format and Enrich Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST to External CRM API": {
+      "main": [
+        [
+          {
+            "node": "Return Result to Controller",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format and Enrich Payload": {
+      "main": [
+        [
+          {
+            "node": "POST to External CRM API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5d679297-3aea-4f60-9cc7-7fcbe38394e9",
+  "meta": {
+    "instanceId": "aa899d52bc9a99662e8a8f3c92d223624a7cc5e3650b081a8a1a22bb1554df16"
+  },
+  "id": "htonYx25yXv7KMFU",
+  "tags": []
+}

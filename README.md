@@ -1,4 +1,4 @@
-# 🛡️ Self-Healing Architecture and Dead Letter Queue in n8n
+# Self-Healing Architecture and Dead Letter Queue in n8n
 
 ## 📉 The Business Problem: Silent Failures
 In enterprise automation, external APIs (CRMs, Payment Gateways, ERPs) will inevitably experience downtime, rate limits, or validation errors. 

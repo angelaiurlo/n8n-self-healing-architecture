@@ -27,9 +27,13 @@ If the Worker fails, the Controller gracefully routes the *intact, original payl
 4. **Error Branch (DLQ Routing):** If the Worker fails, this branch activates. It captures the original payload + the error message and securely writes it to the Fallback Database (Notion).
 5. **Alerting:** Sends a formatted HTML email/Slack message to the Admin with the failure details.
 
+<img width="1196" height="530" alt="image" src="https://github.com/user-attachments/assets/e3f99bf0-9cf6-4864-9bad-12315874bf39" />
+
 ### 2. The Worker (Child Workflow)
 * Contains the actual business logic (e.g., Data formatting, HTTP Requests to CRMs, Email dispatching). 
 * *Note: Does not contain any error handling. It is designed to "fail fast" and return the error to the Controller.*
+
+<img width="1566" height="447" alt="image" src="https://github.com/user-attachments/assets/3fe7d855-5091-4338-a413-636e2872e3b5" />
 
 ---
 

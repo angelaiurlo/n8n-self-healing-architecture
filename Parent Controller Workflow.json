@@ -350,7 +350,6 @@
       ]
     }
   ],
-  "pinData": {},
   "connections": {
     "Webhook — Receive Payload": {
       "main": [
@@ -423,8 +422,7 @@
   },
   "versionId": "ad7df0f0-a7b2-4fc3-b0b0-04db97678789",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "aa899d52bc9a99662e8a8f3c92d223624a7cc5e3650b081a8a1a22bb1554df16"
+    "templateCredsSetupCompleted": true
   },
   "id": "FXRN4fGiPJwR26VY",
   "tags": []

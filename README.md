@@ -38,8 +38,20 @@ If the Worker fails, the Controller gracefully routes the *intact, original payl
 ---
 
 ## ⚙️ How to Implement
-1. Import `child-worker-workflow.json` into your n8n instance. Take note of its Workflow ID.
-2. Import `parent-controller-workflow.json`.
+1. Import `Child Worker Workflow.json` into your n8n instance. Take note of its Workflow ID.
+2. Import `Parent Controller Workflow.json`.
 3. Open the `Execute Workflow` node in the Parent. Link it to the Child workflow ID.
 4. Ensure the `Execute Workflow` node has **Wait for sub-workflow** enabled, and the On Error behavior is set to **Continue (using error output)**.
 5. Connect your preferred database to the Error Output branch to act as your Dead Letter Queue.
+
+---
+
+## 👩‍💻 About the author
+
+Built by **Angela Iurlo** — custom automations and apps for companies and agencies that want to eliminate manual work.
+
+🌐 [angelaiurlo.com](https://angelaiurlo.com) · 💼 [LinkedIn](https://www.linkedin.com/in/angela-iurlo) · ✉️ angela.iurlo@angelaiurlo.com
+
+Want something similar for your business? [Ask for a free consultation](https://angelaiurlo.com/consulta.html).
+
+> All data in this repository is sample data. No credentials are included.
